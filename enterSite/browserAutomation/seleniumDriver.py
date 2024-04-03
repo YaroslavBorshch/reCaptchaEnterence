@@ -14,8 +14,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from twocaptcha import TwoCaptcha
 
 DRIVER_PATH = str(Path(__file__).resolve().parent.joinpath('webdriverLinux/chromedriver'))
-LINK = os.environ['LINK'] or 'https://stripchat.global/'
-CAPTCHA_API_KEY = os.environ['CAPTCHA_API_KEY'] or '9fe3a62e9d89f6d358dbaa3facc553c7'
+LINK = os.environ.get('LINK') or 'https://stripchat.global/'
+CAPTCHA_API_KEY = os.environ.get('CAPTCHA_API_KEY') or '9fe3a62e9d89f6d358dbaa3facc553c7'
 
 
 class AutomationEngine:
@@ -92,9 +92,13 @@ class AutomationEngine:
         cords = self.shuffle_cursor(loginButton)
         self.actionsWay.move_to_element_with_offset(loginButton, cords['x'], cords['y']).click().perform()
         # выжидаем появления модалки с вводом
-        WebDriverWait(self.driver, 30).until(
-            EC.presence_of_element_located((By.ID, "login_login_or_email"))
-        )
+        try:
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located((By.ID, "login_login_or_email"))
+            )
+        except Exception as e:
+            returned_result['message'] = e
+            return returned_result
         time.sleep(2)
         # двигаемся к вводу логина
         loginInput = self.driver.find_element(By.ID, "login_login_or_email")
@@ -122,6 +126,17 @@ class AutomationEngine:
         login_form_submit = self.driver.find_element(By.CLASS_NAME, "login-form__submit")
         cords = self.shuffle_cursor(login_form_submit)
         self.actionsWay.move_to_element_with_offset(login_form_submit, cords['x'], cords['y']).click().perform()
+
+        try:
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "tokens-menu"))
+            )
+        except Exception as e:
+            returned_result = {
+                'code': 400,
+                'message': 'incorrect pass or username'
+            }
+            return returned_result
 
         # Если дошли до сюда, значит авторизация прошла успешно:
         returned_result = {
