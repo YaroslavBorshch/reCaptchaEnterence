@@ -19,11 +19,12 @@
 ```shell
    reCaptchaEnterence/enterSite/browserAutomation/webdriverLinux
 ```
+--p.s. нет, докер чот сложно >_<--
 
 - - -
 
 Для удобства стоит создать супер-пользователя, что бы использовать админку
-(128:0:0:1/admin)
+(128:0:0:1:8000/admin)
 ```shell
     python3 manage.py createsuperuser
 ```
@@ -31,10 +32,12 @@
 
 После этого можно приминить миграции и запускать сервер
 ```shell
+    python3 manage.py makemigrations
     python3 manage.py migrate
     python3 manage.py runserver
 ```
 - - -
+link: 127:0:0:1:8000
 браузер будет закрывать после 20 секунд после того как закончил работу с логином
 #### Автоматически будет создано 3 пользователя:
 1. **wrong_pass_user** - пользователь, который есть в БД но его нет на сайте
