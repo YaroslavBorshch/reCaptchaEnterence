@@ -1,0 +1,6 @@
+Django
+selenium
+2captcha-python
+
+#openai-whisper
+#sudo apt update && sudo apt install ffmpeg
